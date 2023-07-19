@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author      <a href=https://github.com/MagyarZoli>Magyar Zoltán</a>
  */
 public class FileHandler
-implements CreateFile {
+implements CreateFile, DeleteFile {
 
     /**
      * Store specified file name in variable.
@@ -38,7 +38,7 @@ implements CreateFile {
      * It ensures that the fileName property and file property are properly set for the FileHandler instance being constructed.
      * @param       fileName the specified file name.
      * @see         github.magyarzoli.FileHandler#setFileName(String) setFileName(String)
-     * @see         github.magyarzoli.FileHandler#setFile(File) setFile(File) 
+     * @see         github.magyarzoli.FileHandler#setFile(File) setFile(File)
      */
     public FileHandler(String fileName) {
         setFileName(fileName);
@@ -144,7 +144,7 @@ implements CreateFile {
      * <ul>
      *     <li>It checks if the file specified by the {@code file} property exists using {@code file}.{@link java.io.File#exists() exists()}.</li>
      *     <li>If the file exists, it invokes the {@link java.io.File#delete() delete()} method on the file object to delete the existing {@code file}.</li>
-     *     <li>After deleting the file (if it existed), it proceeds to create a new file using the {@code createNewFile()} method by invoking 
+     *     <li>After deleting the file (if it existed), it proceeds to create a new file using the {@code createNewFile()} method by invoking
      *     the {@code createNewFile()} method of the {@code FileFunctional} interface,
      *     which encapsulates the {@code file.createNewFile()} call.</li>
      * </ul>
@@ -181,16 +181,54 @@ implements CreateFile {
     }
 
     /**
-     * {@code newFile} method that operates on the {@code fileName} property. 
+     * {@code deleteAndCreateFile} method within the {@code FileHandler} class.
+     * <ul>
+     *     <li>It checks if the file specified by the {@code file} property exists using {@code file}.{@link java.io.File#exists() exists()}.</li>
+     *     <li>If the file exists, it invokes the {@link java.io.File#delete() delete()} method on the file object to delete the existing {@code file}.</li>
+     *     <li>After deleting the file (if it existed), it proceeds to create a new file using the {@code createNewFile()} method by invoking
+     *     the {@code createNewFile()} method of the {@code FileFunctional} interface,
+     *     which encapsulates the {@code file.createNewFile()} call.</li>
+     * </ul>
+     * {@code deleteAndCreateFile} method first checks if the file exists and deletes it if it does. Then, it creates a new file using the {@code createNewFile()} method.
+     * This approach allows for recreating the file by deleting any existing file with the same name and then creating a new one using the {@code createNewFile()} method of the {@code FileFunctional} interface.
+     * @see         github.magyarzoli.FileFunctional FileFunctional
+     * @see         github.magyarzoli.CreateFile#createNewFile(FileFunctional) createNewFile(FileFunctional)
+     */
+    @Override
+    public void deleteAndCreateFile() {
+        if (file.exists()) {
+            file.delete();
+            createNewFile(() -> file.createNewFile());
+        }
+    }
+
+    /**
+     * {@code deleteFile} method within the {@code FileHandler} class.
+     * <ul>
+     *     <li>It checks if the file specified by the {@code file} property exists using {@code file}.{@link java.io.File#exists() exists()}.</li>
+     *     <li>If the file exists, it invokes the {@link java.io.File#delete() delete()} method on the {@code file} object to delete the file.</li>
+     * </ul>
+     * {@code deleteFile} method checks if the file exists and deletes it if it does.
+     * This method allows for explicitly deleting the file specified by the {@code file} property.
+     */
+    @Override
+    public void deleteFile() {
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    /**
+     * {@code newFile} method that operates on the {@code fileName} property.
      * <ul>
      *     <li>The {@code fileName} string is split using the dot (.) as the delimiter. The result is stored in the {@code split} array.</li>
      *     <li>An {@code int} variable {@code count} is initialized to <i>1</i>.</li>
      *     <li>The {@code name} variable is created by joining the elements of the {@code split} array,
      *     except for the last element (the file extension), using the dot as the separator.</li>
-     *     <li>The method checks if a file with the given {@code fileName} already exists by invoking {@code file}.{@link java.io.File#exists() exists()}. 
+     *     <li>The method checks if a file with the given {@code fileName} already exists by invoking {@code file}.{@link java.io.File#exists() exists()}.
      *     It's assumed that file is declared and initialized elsewhere in the class.</li>
      *     <li>If a file with the same name already exists, a loop is entered.</li>
-     *     <li>Inside the loop, a new {@link java.io.File File} object is created with an updated name 
+     *     <li>Inside the loop, a new {@link java.io.File File} object is created with an updated name
      *     that includes the incremented {@code count} value and the original file extension.</li>
      *     <li>The loop continues until a file with the updated name does not exist {@code (!file.exists())}.</li>
      *     <li>Finally, the {@code fileName} property is updated with the name of the file that was found not to exist.</li>
@@ -203,7 +241,7 @@ implements CreateFile {
         String name = String.join(".", Arrays.copyOf(split, (split.length - 1)));
         if (file.exists()) {
             do {
-                file = new File(name + "(" + count++ + ")." + split[(split.length-1)]);
+                file = new File(name + "(" + count++ + ")." + split[(split.length - 1)]);
             } while (file.exists());
             fileName = file.getName();
         }
