@@ -1,6 +1,9 @@
 package github.magyarzoli;
 
-import java.io.File;
+import java.io.*;
+import java.util.*;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import github.magyarzoli.CreateFile.CreateCommand;
@@ -10,15 +13,23 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileHandlerTest {
 
-    private String fileName, expectedFileName;
-    private File file, expectedFile;
-    private Character split = ';';
-    private FileHandler handler, expectedHandler;
+    private static String fileName, expectedFileName;
+    private static File file, expectedFile;
+    private static FileHandler handler, expectedHandler;
+
+    @BeforeEach
+    void setUp() {
+        fileName = "test.txt";
+        assertDoesNotThrow(() -> file = new File(fileName));
+        assertDoesNotThrow(() -> handler = new FileHandler(fileName));
+    }
 
     @Test
-    @DisplayName(value = "FileHandler constructor checking.")
+    @DisplayName("FileHandler constructor checking.")
     void testFileHandlerConstructor() {
         fileName = null;
+        file = null;
+        handler = null;
         assertThrows(NullPointerException.class, () -> handler = new FileHandler(fileName));
         assertThrows(IllegalArgumentException.class, () -> handler = new FileHandler(""));
         assertThrows(IllegalArgumentException.class, () -> handler = new FileHandler(" "));
@@ -37,11 +48,8 @@ public class FileHandlerTest {
     }
 
     @Test
-    @DisplayName(value = "Creates the file.")
+    @DisplayName("Creates the file.")
     void testCreatesTheFile() {
-        fileName = "test1.txt";
-        file = new File(fileName);
-        handler = new FileHandler(fileName);
         if (!file.exists()) {
             handler.create(CreateCommand.CREATES_THE_FILE);
             assertTrue(handler.getFile().exists());
@@ -56,11 +64,8 @@ public class FileHandlerTest {
     }
 
     @Test
-    @DisplayName(value = "Creates again the file.")
+    @DisplayName("Creates again the file.")
     void testCreatesAgainTheFile() {
-        fileName ="test2.txt";
-        file = new File(fileName);
-        handler = new FileHandler(fileName);
         if (!file.exists()) {
             handler.create(CreateCommand.CREATES_AGAIN_THE_FILE);
             assertTrue(handler.getFile().exists());
@@ -75,11 +80,8 @@ public class FileHandlerTest {
     }
 
     @Test
-    @DisplayName(value = "Creates does not if it already exists.")
+    @DisplayName("Creates does not if it already exists.")
     void testCreatesDoesNotIfIrAlreadyExists() {
-        fileName ="test3.txt";
-        file = new File(fileName);
-        handler = new FileHandler(fileName);
         if (!file.exists()) {
             handler.create(CreateCommand.CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS);
             assertTrue(handler.getFile().exists());
@@ -94,11 +96,60 @@ public class FileHandlerTest {
     }
 
     @Test
-    @DisplayName(value = "Creates again and Delete the contents of the file.")
-    void testCreatesAgainDeleteTheContentsOfTheFile() {
-        fileName ="test4.txt";
+    @DisplayName("Read it and store it in a String array.")
+    void testReadToArray() {
+        String[] read;
+        fileName = "invalid.txt";
         file = new File(fileName);
         handler = new FileHandler(fileName);
+        assertThrows(RuntimeException.class, () -> handler.read());
+        assertNull(read = handler.getReadArray());
+        fileName = "read.txt";
+        file = new File(fileName);
+        handler = new FileHandler(fileName);
+        if (!file.exists()) {
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_THE_FILE));
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                writer.write("test,\ntest2, test3,");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        assertDoesNotThrow(() -> handler.read());
+        assertNotNull(read = handler.getReadArray());
+        assertTrue(read.length > 0);
+        System.out.println(Arrays.toString(read));
+    }
+
+    @Test
+    @DisplayName("Read it and store it in a String Collection.")
+    void testReadToCollection() {
+        Collection<String> read;
+        fileName = "invalid.txt";
+        file = new File(fileName);
+        handler = new FileHandler(fileName);
+        assertThrows(RuntimeException.class, () -> handler.read());
+        assertNull(read = handler.getReadCollection());
+        fileName = "read.txt";
+        file = new File(fileName);
+        handler = new FileHandler(fileName);
+        if (!file.exists()) {
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_THE_FILE));
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                writer.write("test,\ntest2, test3,");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        assertDoesNotThrow(() -> handler.read());
+        assertNotNull(read = handler.getReadCollection());
+        assertFalse(read.isEmpty());
+        read.forEach((element) -> System.out.print(element + ", "));
+    }
+
+    @Test
+    @DisplayName("Creates again and Delete the contents of the file.")
+    void testCreatesAgainDeleteTheContentsOfTheFile() {
         handler.create(CreateCommand.CREATES_AGAIN_THE_FILE);
         handler.delet(DeleteCommand.DELETE_THE_CONTENTS_OF_THE_FILE);
         assertTrue(handler.getFile().exists());
@@ -107,13 +158,10 @@ public class FileHandlerTest {
     }
 
     @Test
-    @DisplayName(value = "Creates and Delete the contents of the file.")
+    @DisplayName("Creates and Delete the contents of the file.")
     void testCreatesDeleteTheContentsOfTheFile() {
-        fileName ="test4.txt";
-        expectedFileName = "test4(1).txt";
-        file = new File(fileName);
+        expectedFileName = "test(1).txt";
         expectedFile = new File(expectedFileName);
-        handler = new FileHandler(fileName);
         expectedHandler = new FileHandler(expectedFileName);
         if (expectedFile.exists()) {
             expectedHandler.delet(DeleteCommand.DELETE_THE_FILE);
@@ -130,11 +178,8 @@ public class FileHandlerTest {
     }
 
     @Test
-    @DisplayName(value = "Creates again and Delete the file.")
+    @DisplayName("Creates again and Delete the file.")
     void testCreatesAgainDeleteTheFile() {
-        fileName ="test5.txt";
-        file = new File(fileName);
-        handler = new FileHandler(fileName);
         handler.create(CreateCommand.CREATES_AGAIN_THE_FILE);
         handler.delet(DeleteCommand.DELETE_THE_FILE);
         assertFalse(handler.getFile().exists());
@@ -143,13 +188,10 @@ public class FileHandlerTest {
     }
 
     @Test
-    @DisplayName(value = "Creates and Delete the contents of the file.")
+    @DisplayName("Creates and Delete the contents of the file.")
     void testCreatesDeleteTheFile() {
-        fileName ="test4.txt";
-        expectedFileName = "test4(1).txt";
-        file = new File(fileName);
+        expectedFileName = "test(1).txt";
         expectedFile = new File(expectedFileName);
-        handler = new FileHandler(fileName);
         expectedHandler = new FileHandler(expectedFileName);
         if (expectedFile.exists()) {
             expectedHandler.delet(DeleteCommand.DELETE_THE_FILE);

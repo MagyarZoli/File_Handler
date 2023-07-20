@@ -49,17 +49,10 @@ public interface CreateFile {
      */
     default void create(CreateCommand command) {
         switch (command) {
-            case CREATES_THE_FILE:
-                createFile();
-                break;
-            case CREATES_AGAIN_THE_FILE:
-                recreateFile();
-                break;
-            case CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS:
-                notCreateAlreadyExists();
-                break;
-            default:
-                throw new IllegalArgumentException();
+            case CREATES_THE_FILE -> createFile();
+            case CREATES_AGAIN_THE_FILE -> recreateFile();
+            case CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS -> notCreateAlreadyExists();
+            default -> throw new IllegalArgumentException();
         }
     }
 
@@ -68,7 +61,7 @@ public interface CreateFile {
      * This method executes the {@code fileFunctional()} method of the provided {@code FileFunctional} object.
      * <ul>
      *     <li>The {@code createNewFile()} method is declared with a {@code void} return type, and it takes a {@code FileFunctional} object as a parameter.</li>
-     *     <li>Inside the method, there is a {@code try-catch} block to handle potential {@link java.io.IOExceptions IOExceptions}.</li>
+     *     <li>Inside the method, there is a {@code try-catch} block to handle potential {@code IOExceptions}.</li>
      *     <li>The {@code fileFunctional()} method of the {@code FileFunctional} object is invoked within the try block using the {@code fileFunctional.fileFunctional()} syntax.</li>
      *     <li>If an {@code IOException} occurs during the execution of {@code fileFunctional()}, it is caught by the catch block.</li>
      *     <li>In the catch block, a {@link java.lang.RuntimeException RuntimeException} is thrown, wrapping the original {@code IOException} as the cause. 

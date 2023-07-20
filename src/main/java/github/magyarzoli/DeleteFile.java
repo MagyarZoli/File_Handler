@@ -37,14 +37,9 @@ public interface DeleteFile {
      */
     default void delet(DeleteCommand command) {
         switch (command) {
-            case DELETE_THE_CONTENTS_OF_THE_FILE:
-                deleteAndCreateFile();
-                break;
-            case DELETE_THE_FILE:
-                deleteFile();
-                break;
-            default :
-                throw new IllegalArgumentException();
+            case DELETE_THE_CONTENTS_OF_THE_FILE -> deleteAndCreateFile();
+            case DELETE_THE_FILE -> deleteFile();
+            default -> throw new IllegalArgumentException();
         }
     }
 

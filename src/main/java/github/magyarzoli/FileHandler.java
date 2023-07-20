@@ -1,15 +1,21 @@
 package github.magyarzoli;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
- * Class for creating a file.
+ * Class for creating, reading and deleting a file.
  * @since       1.0
  * @author      <a href=https://github.com/MagyarZoli>Magyar Zoltán</a>
  */
 public class FileHandler
-implements CreateFile, DeleteFile {
+implements CreateFile, ReadFile, DeleteFile {
 
     /**
      * Store specified file name in variable.
@@ -20,6 +26,28 @@ implements CreateFile, DeleteFile {
      * Store specified file in variable.
      */
     private File file;
+
+    private String split = " ";
+
+    /**
+     * Store values read from the file in an array.
+     */
+    private String[] readArray;
+
+    /**
+     * Storage of values read from a file in a collection.
+     */
+    private Collection<String> readCollection;
+
+    /**
+     * Storage of values scanned from a file in a array, keeping the scanning pattern.
+     */
+    private String[] delimitedArray;
+
+    /**
+     * Storage of values scanned from a file in a collection, keeping the scanning pattern.
+     */
+    private Collection<String> delimitedCollection;
 
     /**
      * Constructor reserved for further inheritance in a hierarchical system.
@@ -87,7 +115,7 @@ implements CreateFile, DeleteFile {
      * </ul>
      * By using this {@code setFileName()} method, you can set the value of the fileName property of an object while ensuring that the provided {@code fileName} meets the required criteria.
      * If the criteria are not met, an exception is thrown to indicate the error.
-     * @param       fileName
+     * @param       fileName enter the file name you want to use.
      */
     public void setFileName(String fileName) {
         if (!fileName.isEmpty() && !fileName.isBlank() && fileName != null) {
@@ -99,7 +127,7 @@ implements CreateFile, DeleteFile {
 
     /**
      * {@code getFile} returns specified file in {@link java.io.File File} class.
-     * @return      file
+     * @return      returns a file.
      */
     public File getFile() {
         return file;
@@ -107,10 +135,36 @@ implements CreateFile, DeleteFile {
 
     /**
      * Can transfer to use an existing File.
-     * @param       file
+     * @param       file specify the file you want to use.
      */
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public String getSplit() {
+        return split;
+    }
+
+    public void setSplit(String split) {
+        if (split != null) {
+            this.split = split;
+        }
+    }
+
+    /**
+     * Storing read values in an array.
+     * @return      read values in an array.
+     */
+    public String[] getReadArray() {
+        return readArray;
+    }
+
+    /**
+     * Storing read values in a collection.
+     * @return      read values in a collection.
+     */
+    public Collection<String> getReadCollection() {
+        return readCollection;
     }
 
     /**
@@ -178,6 +232,52 @@ implements CreateFile, DeleteFile {
         if (!file.exists()) {
             createNewFile(() -> file.createNewFile());
         }
+    }
+
+    /**
+     * {@code read} It reads lines from a file and populates four different data structures:
+     * {@code readArray}, {@code readCollection}, {@code delimitedArray}, and {@code delimitedCollection}.
+     * <ul>
+     *     <li>Two lists are declared to store the lines read from the file {@code result}
+     *     and the lines with an additional newline character at the end {@code delimitedResult}.</li>
+     *     <li>The method uses a try-with-resources block to ensure the {@link java.io.BufferedReader BufferedReader}
+     *     is properly closed after use.</li>
+     *     <li>A {@code BufferedReader} is created to read the lines from the file specified by {@code fileName}.</li>
+     *     <li>Two {@link java.util.ArrayList ArrayList} instances are initialized for {@code result} and {@code delimitedResult}.</li>
+     *     <li>The method reads each line from the file using {@code reader}.{@link java.io.BufferedReader#readLine()}
+     *     and adds the line to both {@code result} and {@code delimitedResult}.</li>
+     *     <li>The last line in {@code delimitedResult} (the one with an extra newline) is retrieved.</li>
+     *     <li>The last line in {@code delimitedResult} is modified to remove the trailing newline character.</li>
+     *     <li>If any {@code IOException} occurs during file reading, a {@link java.lang.RuntimeException RuntimeException}
+     *     is thrown, wrapping the original {@code IOException}.</li>
+     *     <li>After the try-with-resources block, the method converts both lists to arrays and assigns them to the corresponding class fields:
+     *     {@code readArray} is assigned the array representation of {@code result}.
+     *     {@code readCollection} is assigned the reference to {@code result} (not a new copy).
+     *     {@code delimitedArray} is assigned the array representation of {@code delimitedResult}.
+     *     {@code delimitedCollection} is assigned the reference to {@code delimitedResult} (not a new copy).</li>
+     * </ul>
+     * If the file is not found or there are any other issues while reading, a {@code RuntimeException} will be thrown.
+     */
+    @Override
+    public void read() {
+        List<String> result, delimitedResult;
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            result = new ArrayList<>();
+            delimitedResult = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.add(line);
+                delimitedResult.add(line + "\n");
+            }
+            String lastLine = delimitedResult.get(delimitedResult.size() - 1);
+            delimitedResult.set((delimitedResult.size() - 1), lastLine.substring(0, lastLine.length() - 1));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        readArray = result.toArray(new String[0]);
+        readCollection = result;
+        delimitedArray = delimitedResult.toArray(new String[0]);
+        delimitedCollection = delimitedResult;
     }
 
     /**
