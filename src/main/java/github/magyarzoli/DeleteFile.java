@@ -35,7 +35,7 @@ public interface DeleteFile {
      * The method will execute the corresponding action based on the value of the command parameter.
      * @param       command by specifying the file can be deleted in several ways.
      */
-    default void delet(DeleteCommand command) {
+    default void delete(DeleteCommand command) {
         switch (command) {
             case DELETE_THE_CONTENTS_OF_THE_FILE -> deleteAndCreateFile();
             case DELETE_THE_FILE -> deleteFile();

@@ -11,17 +11,17 @@ import java.io.IOException;
 public interface CreateFile {
 
     /**
-     * during implementation, if the file does not yet exist, create it, if it does, change the name of the file and create the file as such.
+     * During implementation, if the file does not yet exist, create it, if it does, change the name of the file and create the file as such.
      */
     public void createFile();
 
     /**
-     * during implementation, if the file does not yet exist, create it, if it does, then create it again, ignoring the existence of the previous file.
+     * During implementation, if the file does not yet exist, create it, if it does, then create it again, ignoring the existence of the previous file.
      */
     public void recreateFile();
 
     /**
-     * during implementation, if the file does not yet exist, create it, if it does, do not create the file, protecting the existing file.
+     * During implementation, if the file does not yet exist, create it, if it does, do not create the file, protecting the existing file.
      */
     public void notCreateAlreadyExists();
 
@@ -38,6 +38,8 @@ public interface CreateFile {
      *     <li>If none of the above cases match, meaning an unexpected value is passed,
      *     an {@link java.lang.IllegalArgumentException IllegalArgumentException} is thrown using the throw new {@code IllegalArgumentException()} statement.</li>
      *     <li>The {@code default} case is optional but recommended to catch unexpected or undefined values of the {@code CreateCommand} enum.</li>
+     *     <li>The method is defined as a default method, which means it can be overridden in implementing classes
+     *     but provides a default implementation if not overridden.</li>
      * </ul>
      * By using this {@code create()} method, you can pass different values of the {@code CreateCommand} enum to specify different creation behaviors.
      * The method will execute the corresponding action based on the value of the {@code command} parameter.
@@ -64,11 +66,11 @@ public interface CreateFile {
      *     <li>Inside the method, there is a {@code try-catch} block to handle potential {@code IOExceptions}.</li>
      *     <li>The {@code fileFunctional()} method of the {@code FileFunctional} object is invoked within the try block using the {@code fileFunctional.fileFunctional()} syntax.</li>
      *     <li>If an {@code IOException} occurs during the execution of {@code fileFunctional()}, it is caught by the catch block.</li>
-     *     <li>In the catch block, a {@link java.lang.RuntimeException RuntimeException} is thrown, wrapping the original {@code IOException} as the cause. 
+     *     <li>In the catch block, a {@link java.lang.RuntimeException RuntimeException} is thrown, wrapping the original {@code IOException} as the cause.
      *     This allows the exception to be propagated up the call stack while preserving the original exception information</li>
      * </ul>
      * By using this {@code createNewFile()} method, you can pass any implementation of the {@code FileFunctional} interface as an argument.
-     * The method will execute the {@code fileFunctional()} method of that implementation, 
+     * The method will execute the {@code fileFunctional()} method of that implementation,
      * handling any {@code IOExceptions} that may occur and wrapping them in a {@code RuntimeException} for easier error handling.
      * @param       fileFunctional lambda function.
      * @see         github.magyarzoli.FileFunctional#fileFunctional() fileFunctional()
