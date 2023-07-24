@@ -70,12 +70,12 @@ public class FileHandlerTest {
     @DisplayName("Creates the file.")
     void testCreatesTheFile() {
         if (!file.exists()) {
-            handler.create(CreateCommand.CREATES_THE_FILE);
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_THE_FILE));
             assertTrue(handler.getFile().exists());
             assertEquals(fileName, handler.getFileName());
             assertEquals(file, handler.getFile());
         } else {
-            handler.create(CreateCommand.CREATES_THE_FILE);
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_THE_FILE));
             assertTrue(handler.getFile().exists());
             assertNotEquals(fileName, handler.getFileName());
             assertNotEquals(file, handler.getFile());
@@ -86,12 +86,12 @@ public class FileHandlerTest {
     @DisplayName("Creates again the file.")
     void testCreatesAgainTheFile() {
         if (!file.exists()) {
-            handler.create(CreateCommand.CREATES_AGAIN_THE_FILE);
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_AGAIN_THE_FILE));
             assertTrue(handler.getFile().exists());
             assertEquals(fileName, handler.getFileName());
             assertEquals(file, handler.getFile());
         } else {
-            handler.create(CreateCommand.CREATES_AGAIN_THE_FILE);
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_AGAIN_THE_FILE));
             assertTrue(handler.getFile().exists());
             assertEquals(fileName, handler.getFileName());
             assertEquals(file, handler.getFile());
@@ -102,12 +102,12 @@ public class FileHandlerTest {
     @DisplayName("Creates does not if it already exists.")
     void testCreatesDoesNotIfIrAlreadyExists() {
         if (!file.exists()) {
-            handler.create(CreateCommand.CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS);
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS));
             assertTrue(handler.getFile().exists());
             assertEquals(fileName, handler.getFileName());
             assertEquals(file, handler.getFile());
         } else {
-            handler.create(CreateCommand.CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS);
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS));
             assertTrue(handler.getFile().exists());
             assertEquals(fileName, handler.getFileName());
             assertEquals(file, handler.getFile());
@@ -233,8 +233,8 @@ public class FileHandlerTest {
     @Test
     @DisplayName("Creates again and Delete the contents of the file.")
     void testCreatesAgainDeleteTheContentsOfTheFile() {
-        handler.create(CreateCommand.CREATES_AGAIN_THE_FILE);
-        handler.delete(DeleteCommand.DELETE_THE_CONTENTS_OF_THE_FILE);
+        assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_AGAIN_THE_FILE));
+        assertDoesNotThrow(() -> handler.delete(DeleteCommand.DELETE_THE_CONTENTS_OF_THE_FILE));
         assertTrue(handler.getFile().exists());
         assertEquals(fileName, handler.getFileName());
         assertEquals(file, handler.getFile());
@@ -247,11 +247,11 @@ public class FileHandlerTest {
         expectedFile = new File(expectedFileName);
         expectedHandler = new FileHandler(expectedFileName);
         if (expectedFile.exists()) {
-            expectedHandler.delete(DeleteCommand.DELETE_THE_FILE);
+            assertDoesNotThrow(() -> expectedHandler.delete(DeleteCommand.DELETE_THE_FILE));
         }
-        handler.create(CreateCommand.CREATES_THE_FILE);
+        assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_THE_FILE));
         if (file.exists()) {
-            handler.delete(DeleteCommand.DELETE_THE_CONTENTS_OF_THE_FILE);
+            assertDoesNotThrow(() -> handler.delete(DeleteCommand.DELETE_THE_CONTENTS_OF_THE_FILE));
             assertTrue(handler.getFile().exists());
             assertNotEquals(fileName, handler.getFileName());
             assertEquals(expectedFileName, handler.getFileName());
@@ -263,8 +263,8 @@ public class FileHandlerTest {
     @Test
     @DisplayName("Creates again and Delete the file.")
     void testCreatesAgainDeleteTheFile() {
-        handler.create(CreateCommand.CREATES_AGAIN_THE_FILE);
-        handler.delete(DeleteCommand.DELETE_THE_FILE);
+        assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_AGAIN_THE_FILE));
+        assertDoesNotThrow(() -> handler.delete(DeleteCommand.DELETE_THE_FILE));
         assertFalse(handler.getFile().exists());
         assertEquals(fileName, handler.getFileName());
         assertEquals(file, handler.getFile());
@@ -277,16 +277,59 @@ public class FileHandlerTest {
         expectedFile = new File(expectedFileName);
         expectedHandler = new FileHandler(expectedFileName);
         if (expectedFile.exists()) {
-            expectedHandler.delete(DeleteCommand.DELETE_THE_FILE);
+            assertDoesNotThrow(() -> expectedHandler.delete(DeleteCommand.DELETE_THE_FILE));
         }
-        handler.create(CreateCommand.CREATES_THE_FILE);
+        assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_THE_FILE));
         if (file.exists()) {
-            handler.delete(DeleteCommand.DELETE_THE_FILE);
+            assertDoesNotThrow(() -> handler.delete(DeleteCommand.DELETE_THE_FILE));
             assertFalse(handler.getFile().exists());
             assertNotEquals(fileName, handler.getFileName());
             assertEquals(expectedFileName, handler.getFileName());
             assertNotEquals(file, handler.getFile());
             assertEquals(expectedFile, handler.getFile());
         }
+    }
+
+    @Test
+    @DisplayName("Creates with lambda functional expression.")
+    void testCreatesFunctional() {
+        assertDoesNotThrow(() -> handler.create(() -> {
+            if (!handler.getFile().exists()) {
+                assertDoesNotThrow(() -> handler.getFile().createNewFile());
+                testCreatesFunctional();
+            }
+            assertTrue(handler.getFile().exists());
+        }));
+    }
+
+    @Test
+    @DisplayName("Creates with lambda functional expression.")
+    void testUpdateFunctional() {
+        String[] methodSource = new String[] {"fun1", "fun2"};
+        assertDoesNotThrow(() -> handler.update(methodSource, () -> {
+            assertDoesNotThrow(() -> handler.create(CreateCommand.CREATES_DOES_NOT_IF_IT_ALREADY_EXISTS));
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(handler.getFileName()))) {
+                int count = 1;
+                for (String value : methodSource) {
+                    writer.write(value + ((count == methodSource.length) ? " " : handler.getDelimiter()));
+                    count++;
+                }
+                writer.write("\n");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+    }
+
+    @Test
+    @DisplayName("Delete with lambda functional expression.")
+    void testDeleteFunctional() {
+        assertDoesNotThrow(() -> handler.delete(() -> {
+            if (handler.getFile().exists()) {
+                assertDoesNotThrow(() -> handler.getFile().delete());
+                testDeleteFunctional();
+            }
+            assertFalse(handler.getFile().exists());
+        }));
     }
 }

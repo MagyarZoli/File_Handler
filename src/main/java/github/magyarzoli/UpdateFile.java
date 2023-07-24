@@ -132,7 +132,7 @@ public interface UpdateFile {
      * @see         github.magyarzoli.UpdateFile#updateFile(Object[]) updateFile(Object[])
      */
     default <T> void update(T[] update, UpdateCommand command)
-            throws IOException {
+    throws IOException {
         switch (command) {
             case UPDATE_FILE_TO_STARTING_CONTENTS -> updateFileWithStarting(update);
             case UPDATE_FILE_TO_ENDING_CONTENTS -> updateFileWithEnding(update);
@@ -180,7 +180,7 @@ public interface UpdateFile {
      * @see         github.magyarzoli.UpdateFile#updateFile(Collection) updateFile(Collection)
      */
     default <T, C extends Collection<T>> void update(C update, UpdateCommand command)
-            throws IOException {
+    throws IOException {
         switch (command) {
             case UPDATE_FILE_TO_STARTING_CONTENTS -> updateFileWithStarting(update);
             case UPDATE_FILE_TO_ENDING_CONTENTS -> updateFileWithEnding(update);
@@ -232,13 +232,116 @@ public interface UpdateFile {
      * @see         github.magyarzoli.UpdateFile#updateFile(Map) updateFile(Map)
      */
     default <K, V, M extends Map<K, V>> void update(M update, UpdateCommand command)
-            throws IOException {
+    throws IOException {
         switch (command) {
             case UPDATE_FILE_TO_STARTING_CONTENTS -> updateFileWithStarting(update);
             case UPDATE_FILE_TO_ENDING_CONTENTS -> updateFileWithEnding(update);
             case UPDATE_FILE_WITH_CONTENTS_OVERWRITING -> updateFile(update);
             default -> throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * {@code update} method that takes an array of type {@code T} named {update} and a {@code functional} interface
+     * {@code FileFunctional} as parameters. This functional interface seems to have a single abstract method called
+     * {@code fileFunctional()}.
+     * <ul>
+     *     <li>This indicates that the method has a default implementation in the interface. Default methods were
+     *     introduced in Java 8 and allow adding new methods to an interface without breaking the existing
+     *     implementations of that interface.</li>
+     *     <li>{@code <T>} This indicates that the method is a generic method with a type parameter {@code T}.</li>
+     *     <li>This means the method does not return any value; it performs some action.</li>
+     *     <li>The method takes an array of type {@code T} named {@code update} and an instance of the functional
+     *     interface {@code FileFunctional} as parameters.</li>
+     *     <li>The method calls the abstract method {@code fileFunctional()} on the provided instance of {@code FileFunctional}.
+     *     Since {@code FileFunctional} is a functional interface, it is expected to have a single abstract method,
+     *     which is implemented by the calling code outside of this method.</li>
+     * </ul>
+     * The purpose of the {@code update} method is to provide a mechanism for executing code provided by the caller
+     * through the {@code FileFunctional} interface. The implementation of the {@code fileFunctional()} method can
+     * contain custom logic for updating the file or performing other file-related operations. By calling the {@code update}
+     * method with an array of type {@code T} and an instance of {@code FileFunctional}, the caller can effectively
+     * execute their custom code within the context of the {@code update} method.
+     * @param       update the desired content that you would upload.
+     * @param       functional lambda function.
+     * @param       <T> allows this method to be used with different types of arrays.
+     * @throws      IOException throw an exception if implemented methods are not properly implemented.
+     * @see         github.magyarzoli.FileFunctional#fileFunctional() fileFunctional()
+     */
+    default <T> void update(T[] update, FileFunctional functional)
+    throws IOException {
+        functional.fileFunctional();
+    }
+
+    /**
+     * {@code update} method that takes a collection of type {@code C} containing elements of type {@code T}, and a
+     * functional interface {@code FileFunctional} as parameters. This functional interface seems to have a single
+     * abstract method called {@code fileFunctional()}.
+     * <ul>
+     *     <li>This indicates that the method has a default implementation in the interface. Default methods were
+     *     introduced in Java 8 and allow adding new methods to an interface without breaking the existing
+     *     implementations of that interface.</li>
+     *     <li>{@code <T, C extends Collection<T>>} This indicates that the method is a generic method with two type
+     *     parameters: {@code T} representing the type of elements in the collection, and {@code C}, which must be a
+     *     subtype of {@link java.util.Collection Collection}{@code <T>}, representing the type of the collection itself.</li>
+     *     <li>This means the method does not return any value; it performs some action.</li>
+     *     <li>The method takes a collection of type {@code C} named update and an instance of the functional interface
+     *     {@code FileFunctional} as parameters.</li>
+     *     <li>The method calls the abstract method {@code fileFunctional()} on the provided instance of {@code FileFunctional}.
+     *     Since {@code FileFunctional} is a functional interface, it is expected to have a single abstract method,
+     *     which is implemented by the calling code outside of this method.</li>
+     * </ul>
+     * The purpose of the {@code update} method is to provide a mechanism for executing code provided by the caller through
+     * the {@code FileFunctional} interface. The implementation of the {@code fileFunctional()} method can contain custom
+     * logic for updating the file or performing other file-related operations based on the {@code update} collection.
+     * By calling the {@code update} method with a collection of type {@code C} and an instance of {@code FileFunctional},
+     * the caller can effectively execute their custom code within the context of the {@code update} method.
+     * @param       update the desired content that you would upload.
+     * @param       functional lambda function.
+     * @param       <T> allows this method to be used with different types.
+     * @param       <C> this constraint ensures that must be a subtype of Collection.
+     * @throws      IOException throw an exception if implemented methods are not properly implemented.
+     * @see         github.magyarzoli.FileFunctional#fileFunctional() fileFunctional()
+     */
+    default <T, C extends Collection<T>> void update(C update, FileFunctional functional)
+    throws IOException {
+        functional.fileFunctional();
+    }
+
+    /**
+     * {@code update} method that takes a map of type {@code M} with keys of type {@code K} and values of type {@code V},
+     * and a functional interface {@code FileFunctional} as parameters. This functional interface seems to have a single
+     * abstract method called {@code fileFunctional()}.
+     * <ul>
+     *     <li>This indicates that the method has a default implementation in the interface. Default methods were
+     *     introduced in Java 8 and allow adding new methods to an interface without breaking the existing
+     *     implementations of that interface.</li>
+     *     <li>{@code <K, V, M extends Map<K, V>>} This indicates that the method is a generic method with three type
+     *     parameters: {@code K} representing the type of keys, {@code V} representing the type of values, and {@code M},
+     *     which must be a subtype of {@link java.util.Map Map}{@code <K, V>}, representing the type of the map itself.</li>
+     *     <li>This means the method does not return any value; it performs some action.</li>
+     *     <li>The method takes a map of type {@code M} named update and an instance of the functional interface
+     *     {@code FileFunctional} as parameters.</li>
+     *     <li>The method calls the abstract method {@code fileFunctional()} on the provided instance of {@code FileFunctional}.
+     *     Since {@code FileFunctional} is a functional interface, it is expected to have a single abstract method,
+     *     which is implemented by the calling code outside of this method.</li>
+     * </ul>
+     * The purpose of the {@code update} method is to provide a mechanism for executing code provided by the caller
+     * through the {@code FileFunctional} interface. The implementation of the {@code fileFunctional()} method can contain
+     * custom logic for updating the file or performing other file-related operations based on the update map. By calling
+     * the {@code update} method with a map of type {@code M} and an instance of {@code FileFunctional}, the caller can
+     * effectively execute their custom code within the context of the {@code update} method.
+     * @param       update the desired content that you would upload.
+     * @param       functional lambda function.
+     * @param       <K> represents the type of keys in the map.
+     * @param       <V> represents the type of values in the map.
+     * @param       <M> this constraint ensures that must be a subtype of Map.
+     * @throws      IOException throw an exception if implemented methods are not properly implemented.
+     * @see         github.magyarzoli.FileFunctional#fileFunctional() fileFunctional()
+     */
+    default <K, V, M extends Map<K, V>> void update(M update, FileFunctional functional)
+    throws IOException {
+        functional.fileFunctional();
     }
 
     /**

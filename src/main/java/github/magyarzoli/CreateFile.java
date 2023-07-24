@@ -59,6 +59,35 @@ public interface CreateFile {
     }
 
     /**
+     * {@code create} method that takes a functional interface {@code FileFunctional} as a parameter. This functional
+     * interface seems to have a single abstract method called {@code fileFunctional()}.
+     * <ul>
+     *     <li>This indicates that the method has a default implementation in the interface. Default methods were
+     *     introduced in Java 8 and allow adding new methods to an interface without breaking the existing implementations
+     *     of that interface.</li>
+     *     <li>This means the method does not return any value; it performs some action.</li>
+     *     <li>The method takes an instance of the functional interface {@code FileFunctional} as a parameter named
+     *     {@code functional}.</li>
+     *     <li>The method calls the abstract method {@code fileFunctional()} on the provided instance of {@code FileFunctional}.
+     *     Since {@code FileFunctional} is a functional interface, it is expected to have a single abstract method, which
+     *     is implemented by the calling code outside of this method.</li>
+     * </ul>
+     * The purpose of the {@code create} method is to provide a mechanism for executing code provided by the caller
+     * through the {@code FileFunctional} interface. The implementation of the {@code fileFunctional()} method can contain
+     * custom logic for file creation or file-related operations. By calling the {@code create} method with an instance of
+     * {@code FileFunctional}, the caller can effectively execute their custom code within the context of the
+     * {@code create} method.
+     * @param       functional lambda function.
+     * @throws      IOException if the named file exists but is a directory rather than a regular file, does not exist
+     *              but cannot be created, or cannot be opened for any other reason
+     * @see         github.magyarzoli.FileFunctional#fileFunctional() fileFunctional()
+     */
+    default void create(FileFunctional functional)
+    throws IOException {
+        functional.fileFunctional();
+    }
+
+    /**
      * {@code createNewFile} method that accepts an instance of the {@code FileFunctional} functional interface as a parameter.
      * This method executes the {@code fileFunctional()} method of the provided {@code FileFunctional} object.
      * <ul>

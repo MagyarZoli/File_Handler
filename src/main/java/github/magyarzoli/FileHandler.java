@@ -933,7 +933,7 @@ implements CRUDFile {
      *              but cannot be created, or cannot be opened for any other reason
      */
     private <T> void writing(BufferedWriter writer, T[] update, String delimiter)
-            throws IOException {
+    throws IOException {
         for (T value : update) {
             writer.write(value + (value.equals(update[(update.length - 1)]) ? "" : delimiter));
         }
@@ -987,7 +987,7 @@ implements CRUDFile {
      */
     @SuppressWarnings("unchecked")
     private <T, C extends Collection<T>> void writing(BufferedWriter writer, C update, String delimiter)
-            throws IOException {
+    throws IOException {
         List<T> listUpdate = (List<T>) update;
         for (T value : listUpdate) {
             writer.write(value + (value.equals(listUpdate.get(listUpdate.size() - 1)) ? "" : delimiter));
@@ -1036,7 +1036,7 @@ implements CRUDFile {
      *              but cannot be created, or cannot be opened for any other reason
      */
     private <K, V, M extends Map<K, V>> void writing(BufferedWriter writer, M update, String delimiter)
-            throws IOException {
+    throws IOException {
         boolean first = true;
         for (Map.Entry<K, V> entry : update.entrySet()) {
             writer.write((first ? "" : "\n") + entry.getKey() + delimiter + entry.getValue());

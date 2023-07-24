@@ -1,5 +1,7 @@
 package github.magyarzoli;
 
+import java.io.IOException;
+
 /**
  * File deletion interface.
  * Implemented, the inherited class will be able to delete a file.
@@ -41,6 +43,35 @@ public interface DeleteFile {
             case DELETE_THE_FILE -> deleteFile();
             default -> throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * {@code delete} method that takes a functional interface {@code FileFunctional} as a parameter. This functional
+     * interface seems to have a single abstract method called {@code fileFunctional()}.
+     * <ul>
+     *     <li>This indicates that the method has a default implementation in the interface. Default methods were
+     *     introduced in Java 8 and allow adding new methods to an interface without breaking the existing implementations
+     *     of that interface.</li>
+     *     <li>This means the method does not return any value; it performs some action.</li>
+     *     <li>The method takes an instance of the functional interface {@code FileFunctional} as a parameter named
+     *     {@code functional}.</li>
+     *     <li>The method calls the abstract method {@code fileFunctional()} on the provided instance of {@code FileFunctional}.
+     *     Since {@code FileFunctional} is a functional interface, it is expected to have a single abstract method, which
+     *     is implemented by the calling code outside of this method.</li>
+     * </ul>
+     * The purpose of the {@code delete} method is to provide a mechanism for executing code provided by the caller
+     * through the {@code FileFunctional} interface. The implementation of the {@code fileFunctional()} method can contain
+     * custom logic for file deletion or file-related operations. By calling the {@code delete} method with an instance of
+     * {@code FileFunctional}, the caller can effectively execute their custom code within the context of the
+     * {@code delete} method.
+     * @param       functional lambda function.
+     * @throws      IOException if the named file exists but is a directory rather than a regular file, does not exist
+     *              but cannot be created, or cannot be opened for any other reason
+     * @see         github.magyarzoli.FileFunctional#fileFunctional() fileFunctional()
+     */
+    default void delete(FileFunctional functional)
+    throws IOException {
+        functional.fileFunctional();
     }
 
     /**
