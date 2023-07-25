@@ -360,7 +360,7 @@ public interface UpdateFile {
         UPDATE_FILE_TO_ENDING_CONTENTS,
 
         /**
-         * update the file, overwriting its contents.
+         * Update the file, overwriting its contents.
          */
         UPDATE_FILE_WITH_CONTENTS_OVERWRITING,
     }

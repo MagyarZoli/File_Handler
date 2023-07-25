@@ -6,11 +6,19 @@
 
   <groupId>github.magyarzoli</groupId>
   <artifactId>filehandler</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0.0</version>
 
   <name>filehandler</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <description>The class can create, read, upload and delete files in different ways.</description>
+  <url>https://github.com/MagyarZoli/File_Handler</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,18 +39,6 @@
       <version>5.9.2</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-suite</artifactId>
-      <version>1.9.2</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>5.4.0</version>
-      <scope>test</scope>
-    </dependency> 
   </dependencies>
 
   <build>
@@ -56,17 +52,19 @@
           <target>17</target>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
         <version>3.3.0</version>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.5.0</version>
+        <configuration>
+          <source>17</source>
+          <failOnError>true</failOnError>
+        </configuration>
         <executions>
           <execution>
             <id>attach-javadoc</id>
@@ -78,4 +76,13 @@
       </plugin>
     </plugins>
   </build>
+
+  <developers>
+    <developer>
+      <name>Magyar Zoltan</name>
+      <email>magyarz95@gmail.com</email>
+      <organization>github.magyarzoli</organization>
+      <organizationUrl>https://github.com/MagyarZoli</organizationUrl>
+    </developer>
+  </developers>
 </project>

@@ -80,12 +80,12 @@ public interface DeleteFile {
     enum DeleteCommand {
 
         /**
-         * delete file, and then create a new file.
+         * Delete file, and then create a new file.
          */
         DELETE_THE_CONTENTS_OF_THE_FILE,
 
         /**
-         * delete file.
+         * Delete file.
          */
         DELETE_THE_FILE,
     }
