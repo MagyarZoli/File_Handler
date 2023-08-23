@@ -36,8 +36,8 @@ The class can create, read, upload and delete files in different ways.
 - Delete file.
 - And other future implementation for deleting.
 
-## Hierarchy
-![alt text](./src/main/resources/image/FileHandler.png)
+## Diagram
+![alt text](./src/main/resources/diagram/File%20Handler%20Diagram.drawio.png)
 
 ### Authors
 Magyar Zoltán
